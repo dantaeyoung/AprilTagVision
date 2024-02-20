@@ -1,0 +1,4 @@
+numpy>=1.26.4
+opencv-python>=4.9.0.80
+pupil_apriltags>=1.0.4.post10
+python-osc>=1.8.3
