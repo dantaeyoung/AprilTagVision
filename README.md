@@ -24,7 +24,6 @@ AprilTagVision is a drop-in replacement for [reacTIVision](https://reactivision.
 
 ## Running AprilTagVision
 
-Like reacTIVision, AprilTagVision follows the [TUIO Protocol 1.1](https://www.tuio.org/?specification) and sends messages out via OSC on port 3333.
 
 Basic:
 
@@ -41,6 +40,13 @@ Select camera and force camera dimensions:
 Select camera and output verbose debug output:
 
 - `python apriltag_tuio.py --camera 1 --verbose`
+
+Press `p` to pause processing. Press `q` to quit.
+
+
+## Output
+
+Like reacTIVision, AprilTagVision follows the [TUIO Protocol 1.1](https://www.tuio.org/?specification) and sends messages out via OSC on port 3333.
 
 
 
