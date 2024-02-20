@@ -12,12 +12,16 @@ ip = "127.0.0.1"
 port = 3333  
 osc_client = SimpleUDPClient(ip, port)
 
+# Variable to track pause state
+paused = False
+
 
 def send_tuio_messages(messages):
     for m in messages:
         osc_client.send_message(m[0], m[1])
 
 def main():
+    global paused
     args = utils.parse_arguments()
     camera_index = args.camera
     frame_width = args.width
@@ -47,6 +51,17 @@ def main():
         ret, frame = cap.read()
         if not ret:
             break
+
+        # Pause processing if the program is paused
+        if paused:
+            cv2.putText(frame, "PAUSED", (20, frame_height // 2), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255), 2)
+            cv2.imshow('AprilTagVision (press p to pause, q to quit)', frame)
+            key = cv2.waitKey(1) & 0xFF
+            if key == ord('q'):
+                break
+            elif key == ord('p'):
+                paused = False
+            continue
 
 
         # make frame grayscale
@@ -150,12 +165,16 @@ def main():
 #            cv2.putText(frame, str(tag.tag_id), (int(tag.center[0]), int(tag.center[1])), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 255), 2)
 
         # Display the frame
-        cv2.imshow('AprilTagVision (press q to quit)', displayframe)
+        cv2.imshow('AprilTagVision (press p to pause, q to quit)', frame)
 
 
-        # if we get 'q' then exit this program
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+        # Handle key presses
+        key = cv2.waitKey(1) & 0xFF
+        if key == ord('q'):
             break
+        elif key == ord('p'):
+            paused = not paused
+
 
     cap.release()
     cv2.destroyAllWindows()
