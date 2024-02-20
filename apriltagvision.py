@@ -52,6 +52,7 @@ def main():
         # make frame grayscale
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
+
         # detect apriltags
         tags = at_detector.detect(gray, estimate_tag_pose=False, camera_params=None, tag_size=None)
 
@@ -137,17 +138,19 @@ def main():
         # increment fseq
         tuio_fseq += 1
 
+        # Create a copy of the grayscale frame to draw colored polylines
+        displayframe = cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR)
 
         # Visualize detected tags
         for tag in tags:
-            cv2.polylines(frame, [tag.corners.astype(int)], isClosed=True, color=(0, 255, 0), thickness=2)
-            rotated_text_img, _, _ = utils.putRotatedText(frame, str(tag.tag_id), (int(tag.center[0]), int(tag.center[1])), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 255), 2, current_tags[tag.tag_id]['a'])
-            frame = cv2.add(frame, rotated_text_img)
+            cv2.polylines(displayframe, [tag.corners.astype(int)], isClosed=True, color=(0, 255, 0), thickness=2)
+            rotated_text_img, _, _ = utils.putRotatedText(displayframe, str(tag.tag_id), (int(tag.center[0]), int(tag.center[1])), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 255), 2, current_tags[tag.tag_id]['a'])
+            displayframe = cv2.add(displayframe, rotated_text_img)
             
 #            cv2.putText(frame, str(tag.tag_id), (int(tag.center[0]), int(tag.center[1])), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 255), 2)
 
         # Display the frame
-        cv2.imshow('AprilTagVision (press q to quit)', frame)
+        cv2.imshow('AprilTagVision (press q to quit)', displayframe)
 
 
         # if we get 'q' then exit this program
