@@ -48,7 +48,14 @@ Press `p` to pause processing. Press `q` to quit.
 
 Like reacTIVision, AprilTagVision follows the [TUIO Protocol 1.1](https://www.tuio.org/?specification) and sends messages out via OSC on port 3333.
 
-
+Example messages might look like:
+```
+{"address":"/tuio/2Dobj","args":["source","apriltagvision"]}
+{"address":"/tuio/2Dobj","args":["alive",100,101]}
+{"address":"/tuio/2Dobj","args":["set",101,49,0.3847601115703583,0.32317110896110535,0.48030000925064087,0,0,0,0,0]}
+{"address":"/tuio/2Dobj","args":["set",102,73,0.6303706765174866,0.22211359441280365,1.68340003490448,0,0,0,0,0]}
+{"address":"/tuio/2Dobj","args":["fseq",78]}
+```
 
 ## Troubleshooting
 
