@@ -165,7 +165,7 @@ def main():
 #            cv2.putText(frame, str(tag.tag_id), (int(tag.center[0]), int(tag.center[1])), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 255), 2)
 
         # Display the frame
-        cv2.imshow('AprilTagVision (press p to pause, q to quit)', frame)
+        cv2.imshow('AprilTagVision (press p to pause, q to quit)', displayframe)
 
 
         # Handle key presses
