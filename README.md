@@ -42,3 +42,10 @@ Select camera and output verbose debug output:
 
 - `python apriltag_tuio.py --camera 1 --verbose`
 
+
+
+## Troubleshooting
+
+This code is currently only tested on a Mac M1. Please let me know if you try it on another OS or system!
+
+Happy Hacking!
