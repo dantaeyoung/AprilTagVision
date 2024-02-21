@@ -162,7 +162,6 @@ def main():
             rotated_text_img, _, _ = utils.putRotatedText(displayframe, str(tag.tag_id), (int(tag.center[0]), int(tag.center[1])), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 255), 2, current_tags[tag.tag_id]['a'])
             displayframe = cv2.add(displayframe, rotated_text_img)
             
-#            cv2.putText(frame, str(tag.tag_id), (int(tag.center[0]), int(tag.center[1])), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 255), 2)
 
         # Display the frame
         cv2.imshow('AprilTagVision (press p to pause, q to quit)', displayframe)
@@ -182,15 +181,3 @@ def main():
 if __name__ == "__main__":
     main()
 
-"""
-  /tuio/2Dcur source application@address
-  /tuio/2Dcur alive s_id0 ... s_idN
-  /tuio/2Dcur set s_id x_pos y_pos x_vel y_vel m_accel
-  /tuio/2Dcur fseq f_id
-
-[Received OSC]:  {"address":"/tuio/2Dobj","args":["source","reacTIVision"]}
-[Received OSC]:  {"address":"/tuio/2Dobj","args":["alive",7,8]}
-[Received OSC]:  {"address":"/tuio/2Dobj","args":["set",7,1,0.5083478689193726,0.41566142439842224,4.032631874084473,0,0,0,0,0]}
-[Received OSC]:  {"address":"/tuio/2Dobj","args":["set",8,0,0.31934550404548645,0.7052593231201172,5.802523612976074,0,0,0,0,0]}
-[Received OSC]:  {"address":"/tuio/2Dobj","args":["fseq",5764]}
-"""
