@@ -9,6 +9,7 @@ class WSSBroadcastServer():
 
         # Set to store all connected clients
         self.clients = set()
+        self.wbsclient = None
 
 
     async def handle_client(self, websocket, path):
@@ -26,13 +27,14 @@ class WSSBroadcastServer():
 
 
     async def send_message(self, message):
-        async with websockets.connect("ws://" + self.host + ":" + str(self.port)) as websocket:
-            await websocket.send(message)
+        await self.wbsclient.send(message)
 
 
     async def start_server(self):
         server = await websockets.serve(self.handle_client, self.host, self.port)
+        self.wbsclient = await websockets.connect("ws://" + self.host + ":" + str(self.port))
         await server.wait_closed()  # This will keep running until the server is closed.
+        
         
 
 

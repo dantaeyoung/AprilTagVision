@@ -35,14 +35,19 @@ function handleTuioEvent(data) {
   if(data.change === 'appeared') {
     console.log(data.tagid + " APPEARED");
 
-    const tagsDiv = document.getElementById('tags');
-    // Create a new div element
-    const newDiv = document.createElement('div');
-    newDiv.id = 'tag-' + data.tagid; // Set the id of the new div
-    newDiv.innerHTML = 'tag-' + data.tagid;
+    // if tag doesn't already exist 
+    let tagDiv = document.getElementById('tag-' + data.tagid);
+    if(!tagDiv) {
 
-    // Append the new div to the existing div
-    tagsDiv.appendChild(newDiv);
+      const tagsDiv = document.getElementById('tags');
+      // Create a new div element
+      const newDiv = document.createElement('div');
+      newDiv.id = 'tag-' + data.tagid; // Set the id of the new div
+      newDiv.innerHTML = 'tag-' + data.tagid;
+
+      // Append the new div to the existing div
+      tagsDiv.appendChild(newDiv);
+    }
   }
 
   ////////////////

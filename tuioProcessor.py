@@ -22,11 +22,11 @@ last_tags_appearance = {}
 def broadcast_message(address, message):
     global wsserver
     global oscclient
+    print("[BROADCAST] " + address + " -- " + message)
     if wsserver:
         asyncio.create_task(wsserver.send_message(message))
     if oscclient:
         oscclient.send_message(address, message)
-    print("[BROADCAST] " + address + " -- " + message)
 
 def handle_2dobj(address, *args):
     global oscclient
@@ -84,7 +84,6 @@ def handle_2dobj(address, *args):
                 broadcast_message(f"/tuio/{tag_id}", json.dumps(thistag))
                 print(f"Tag {tag_id} disappeared")
                 del last_tags_appearance[tag_id]
-
 
 
 # Define a function to handle incoming OSC messages
