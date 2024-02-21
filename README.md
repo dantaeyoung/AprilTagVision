@@ -66,6 +66,9 @@ Example messages might look like:
 - While the above is running, in another terminal window, also run `python tuioProcessor.py`
 - In a browser window, open `tuio_websocket_demo_3_table_simulate.html` (or the other HTML files).
 
+You should see
+![apriltagvision_htmlscreenshot.png](apriltagvision_htmlscreenshot.png)
+
 ## Troubleshooting
 
 This code is currently only tested on a Mac M1. Please let me know if you try it on another OS or system!
