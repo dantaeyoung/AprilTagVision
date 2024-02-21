@@ -7,6 +7,9 @@ import time
 
 import utils
 
+NEG_FSEQ_FREQ = 0.25
+# this is the frequency at which negative fseq messages are sent. In practice, making this number smaller will allow downstream programs to be more reactive to tag disappearance.
+
 # Initialize the OSC client
 ip = "127.0.0.1"
 port = 3333  
@@ -134,7 +137,7 @@ def main():
         if(len(past_tags) == 0 and len(current_tags) == 0):
             # we also check the time to mimic reactivision behavior, which is to only send consecutive '-1' fseq messages once a second after the first one
             current_time = time.time()
-            if(current_time - last_negfseq_time > 1):
+            if(current_time - last_negfseq_time > NEG_FSEQ_FREQ):
                 tuio_messages.append(["/tuio/2Dobj", ["fseq", -1]])
                 send_tuio_messages(tuio_messages)
                 if(verbose):

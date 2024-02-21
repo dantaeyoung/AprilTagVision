@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Messages Display</title>
+    <style>
+        #table{
+            border: 1px solid #ccc;
+            padding: 10px;
+            width: 640px;
+            height: 480px;
+        }
+    </style>
+</head>
+<body>
+  <h2>TUIO -> tuioProcessor.py -> Here!</h2>
+
+    Existing Tags:
+    <div id="tags">
+    </div>
+
+
+
+    <script>
+
+
+function handleTuioEvent(data) {
+  //console.log(data);
+
+  ////////////////
+  ////////////////
+  ////////////////
+
+  if(data.change === 'appeared') {
+    console.log(data.tagid + " APPEARED");
+
+    const tagsDiv = document.getElementById('tags');
+    // Create a new div element
+    const newDiv = document.createElement('div');
+    newDiv.id = 'tag-' + data.tagid; // Set the id of the new div
+    newDiv.innerHTML = 'tag-' + data.tagid;
+
+    // Append the new div to the existing div
+    tagsDiv.appendChild(newDiv);
+  }
+
+  ////////////////
+  ////////////////
+  ////////////////
+
+  if(data.change === 'moved') {
+    console.log(data.tagid + " moved ");
+    console.log(data);
+  }
+
+
+  ////////////////
+  ////////////////
+  ////////////////
+
+  if(data.change === 'disappeared') {
+    console.log(data.tagid + " DISAPPEARED");
+
+    var elements = document.querySelectorAll('#tag-' + data.tagid);
+    elements.forEach(function(element) {
+      element.parentNode.removeChild(element);
+    });
+
+
+  }
+
+  ////////////////
+  ////////////////
+  ////////////////
+
+}
+
+
+
+
+function connectWebSocket() {
+    let socket = new WebSocket("ws://localhost:8765");
+
+    socket.onopen = function(e) {
+      console.log("[open] Connection established");
+    };
+
+    socket.onmessage = function(event) {
+      handleTuioEvent(JSON.parse(event['data']))
+    };
+
+    socket.onclose = function(event) {
+      if (event.wasClean) {
+        console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+      } else {
+        console.log('[close] Connection died');
+      }
+      setTimeout(connectWebSocket, 2000); // Retry after 2 seconds
+        
+    };
+
+    socket.onerror = function(error) {
+      console.log(`[error]`);
+    };
+}
+
+connectWebSocket();
+
+
+    </script>
+</body>
+</html>
+

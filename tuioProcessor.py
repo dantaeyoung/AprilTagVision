@@ -10,7 +10,9 @@ import json
 
 # this is how many seconds of disappearance the processor should ignore. A higher value leads to more stable values, but more latency. A lower value leads to more sensitivity but more flickering. Generally 0.05 - 0.5 seems to be a good range, with about 0.2 as a sweet spot.
 
-sensitivity_time = 0.2 # TODO something is not working right when set to 0
+# AS A NOTE, the minimum value of this is gated by NEG_FSEQ_FREQ in `apriltagvision.py`. 
+
+sensitivity_time = 0.2 
 
 
 # Dictionary to store the last appearance frame for each tag ID
