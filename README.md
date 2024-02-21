@@ -27,19 +27,19 @@ AprilTagVision is a drop-in replacement for [reacTIVision](https://reactivision.
 
 Basic:
 
-- `python apriltag_tuio.py`
+- `python apriltagvision.py`
   
 Select camera:
 
-- `python apriltag_tuio.py --camera 2`
+- `python apriltagvision.py --camera 2`
 
 Select camera and force camera dimensions:
 
-- `python apriltag_tuio.py --camera 3 --width 640 --height 480`
+- `python apriltagvision.py --camera 3 --width 640 --height 480`
 
 Select camera and output verbose debug output:
 
-- `python apriltag_tuio.py --camera 1 --verbose`
+- `python apriltagvision.py --camera 1 --verbose`
 
 Press `p` to pause processing. Press `q` to quit.
 
@@ -56,6 +56,15 @@ Example messages might look like:
 {"address":"/tuio/2Dobj","args":["set",102,73,0.6303706765174866,0.22211359441280365,1.68340003490448,0,0,0,0,0]}
 {"address":"/tuio/2Dobj","args":["fseq",78]}
 ```
+
+## Usage with tuioProcessor.py
+
+`tuioProcessor.py` is a file that listens to TUIO messages on port 3333, processes them, and outputs 'tag appeared/moved/disappeared' signals to 1) via OSC on port 3334, and 2) via websockets on ws://localhost:8765.
+
+### To use:
+- Run AprilTagVision with `python apriltagvision.py --camera 0`
+- While the above is running, in another terminal window, also run `python tuioProcessor.py`
+- In a browser window, open `tuio_websocket_demo_3_table_simulate.html` (or the other HTML files).
 
 ## Troubleshooting
 
