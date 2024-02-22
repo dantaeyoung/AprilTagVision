@@ -57,6 +57,8 @@ Example messages might look like:
 {"address":"/tuio/2Dobj","args":["fseq",78]}
 ```
 
+Right now, AprilTagVision only supports fiducial markers. There is no camera calibration or touch detection.
+
 # tuioProcessor.py
 
 `tuioProcessor.py` is a file that listens to TUIO messages on port 3333, processes them, and outputs 'tag appeared/moved/disappeared' signals to 1) via OSC on port 3334, and 2) via websockets on ws://localhost:8765.
