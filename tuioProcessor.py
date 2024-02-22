@@ -4,8 +4,9 @@ from pythonosc.osc_server import AsyncIOOSCUDPServer
 from pythonosc import udp_client
 import time
 import asyncio
-import websocket_utils
 import json
+
+from wssbroadcastserver import WSSBroadcastServer
 
 
 # this is how many seconds of disappearance the processor should ignore. A higher value leads to more stable values, but more latency. A lower value leads to more sensitivity but more flickering. Generally 0.05 - 0.5 seems to be a good range, with about 0.2 as a sweet spot.
@@ -93,7 +94,7 @@ def print_message(address, *args):
 
 async def init_websocketserver():
     global wsserver
-    wsserver = websocket_utils.WSSBroadcastServer('127.0.0.1', 8765)
+    wsserver = WSSBroadcastServer('127.0.0.1', 8765)
     print("Creating a websocket server on port 8765...")
     await wsserver.start_server()  # This now properly waits for the server to run
 

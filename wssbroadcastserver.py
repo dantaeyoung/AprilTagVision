@@ -46,11 +46,11 @@ USAGE:
 -----------
 SERVER
 -----------
-import websocket_utils
+from wssbroadcastserver import WSSBroadcastServer
 import asyncio
 
 async def main():
-    wsserver = websocket_utils.WSSBroadcastServer('127.0.0.1', 8765)
+    wsserver = WSSBroadcastServer('127.0.0.1', 8765)
     asyncio.create_task(wsserver.start_server_async())  # This now runs in the background
     print("helloooo")
     while True:
@@ -64,10 +64,10 @@ if __name__ == "__main__":
 CLIENT
 -----------
 import asyncio
-import websocket_utils
+from wssbroadcastserver import WSSBroadcastServer
 
 
-wsserver = websocket_utils.WSSBroadcastServer('127.0.0.1', 8765)
+wsserver = WSSBroadcastServer('127.0.0.1', 8765)
 
 while True:
     message = input("Enter message to send: ")
