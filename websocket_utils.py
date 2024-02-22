@@ -27,7 +27,10 @@ class WSSBroadcastServer():
 
 
     async def send_message(self, message):
-        await self.wbsclient.send(message)
+        if(self.wbsclient == None):
+            print("wbsclient not yet initiated")
+        else:
+            await self.wbsclient.send(message)
 
 
     async def start_server(self):
