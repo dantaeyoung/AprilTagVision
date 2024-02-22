@@ -57,14 +57,21 @@ Example messages might look like:
 {"address":"/tuio/2Dobj","args":["fseq",78]}
 ```
 
-## Usage with tuioProcessor.py
+# tuioProcessor.py
 
 `tuioProcessor.py` is a file that listens to TUIO messages on port 3333, processes them, and outputs 'tag appeared/moved/disappeared' signals to 1) via OSC on port 3334, and 2) via websockets on ws://localhost:8765.
 
+Example messages might look like:
+```
+{"tagid": 27, "change": "appeared", "xpos": 0.5228530764579773, "ypos": 0.8543822169303894, "ang": 3.0566999912261963, "xvel": 0, "yvel": 0, "angvel": 0}
+{"tagid": 27, "change": "moved", "xpos": 0.5225427150726318, "ypos": 0.8544207215309143, "ang": 3.0018999576568604, "xvel": 0, "yvel": 0, "angvel": 0.05480000004172325}
+{"tagid": 27, "change": "disappeared"}
+```
+
 ### To use:
-- Run AprilTagVision with `python apriltagvision.py --camera 0`
-- While the above is running, in another terminal window, also run `python tuioProcessor.py`
-- In a browser window, open `tuio_websocket_demo_3_table_simulate.html` (or the other HTML files).
+1) Run AprilTagVision with `python apriltagvision.py --camera 0`
+2) While the above is running, in another terminal window, also run `python tuioProcessor.py`
+3) In a browser window, open `tuio_websocket_demo_3_table_simulate.html` (or the other HTML files).
 
 You should see
 ![apriltagvision_htmlscreenshot.png](apriltagvision_htmlscreenshot.png)
