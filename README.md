@@ -1,6 +1,6 @@
 # AprilTagVision
 
-![apriltagvision.png](apriltagvision.png)
+![apriltagvision.png](screenshots/apriltagvision.png)
 
 AprilTagVision is a drop-in replacement for [reacTIVision](https://reactivision.sourceforge.net/), using the [Apriltags3](https://github.com/AprilRobotics/apriltags) library developed by [AprilRobotics](https://april.eecs.umich.edu/). The AprilTag library and its fiducial markers, are faster, smaller, and more robust. AprilTagVision uses [pupil-apriltags](https://github.com/pupil-labs/apriltags).
 
@@ -74,7 +74,7 @@ Example messages might look like:
 3) In a browser window, open `tuio_websocket_demo_3_table_simulate.html` (or the other HTML files).
 
 You should see
-![apriltagvision_htmlscreenshot.png](apriltagvision_htmlscreenshot.png)
+![apriltagvision_htmlscreenshot.png](screenshots/apriltagvision_htmlscreenshot.png)
 
 ## Troubleshooting
 
