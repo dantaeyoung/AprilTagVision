@@ -8,19 +8,11 @@ AprilTagVision is a drop-in replacement for [reacTIVision](https://reactivision.
 
 ## Install
 
-1. Download this repo to a local directory.
+1. Download this repo.
 
-2. Recommended: Create a new virtual environment.
-
-- Run the following command to create a new virtual environment. Replace 'venv' with the preferred name for your virtual environment: `python -m venv venv`
-- Activate the virtual environment.
-  - On Windows, you can do this with the following command: `venv\Scripts\activate`
-  - On macOS and Linux, use the following command: `source venv/bin/activate`
-- Once your virtual environment is activated, you should see the name of the virtual environment in the terminal.
-- To deactivate the virtual environment, run the `deactivate` command in the terminal.
-
-3. Install the dependencies listed in the requirements.txt file:
+2. Install the dependencies listed in the requirements.txt file:
    `pip install -r requirements.txt`
+   
 
 ## Running AprilTagVision
 
