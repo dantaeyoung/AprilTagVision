@@ -121,13 +121,28 @@ async def init_OSC_broadcast():
 
 
 
+class TuioProcessor:
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
+    async def init_singleton(self):
+        await asyncio.gather(
+            init_OSC_broadcast(),
+            init_TUIO_listener(),
+            init_websocketserver(),
+        )
+
+
 
 async def main():
-    await asyncio.gather(
-        init_OSC_broadcast(),
-        init_TUIO_listener(),
-        init_websocketserver(),
-    )
+    tuio_processor = TuioProcessor()
+    await tuio_processor.init_singleton()
+
+
 
 if __name__ == "__main__":
     asyncio.run(main())
