@@ -47,10 +47,10 @@ def broadcast_data(address, data):
     if mqttc:
         #mqttc.publish("test", message)
         print(data)
-        if data['tagid'] == 102 and "ang" in data:
+        if "ang" in data and data['tagid'] in tags_homeassistant_config and tags_homeassistant_config[data['tagid']] == "number":
             ang = round(utils.radians_to_number(data['ang']))
             print(ang)
-            mqttc.publish("homeassistant/number/apriltagvision1/tag102/state", ang)
+            mqttc.publish(f"homeassistant/number/apriltagvision1/tag{data['tagid']}/state", ang)
         if data['change'] == 'appeared':
             print(f"homeassistant/binary_sensor/apriltagvision1/tag{ data['tagid']}/state", "1")
             mqttc.publish(f"homeassistant/binary_sensor/apriltagvision1/tag{ data['tagid']}/state", "1")
@@ -162,10 +162,12 @@ def send_mqtt_discover_payload(client):
 
     for tagid, tagtype in tags_homeassistant_config.items():
 
+        print(tagtype)
+
         payload = {
            "unique_id": f"atv1_t{tagid}",
            "name": f"ATV 1 Tag {tagid}",
-           "state_topic": f"homeassistant/apriltagvision1/tag{tagid}/state",
+           "state_topic": f"homeassistant/{tagtype}/apriltagvision1/tag{tagid}/state",
            "device":{
               "identifiers":[
                  "apriltagvision1"
@@ -181,7 +183,7 @@ def send_mqtt_discover_payload(client):
         if tagtype == "number":
             payload['min'] = "0"
             payload['max'] = "100"
-            payload["command_topic"]: f"homeassistant/number/apriltagvision1/tag{tagid}/set"
+            payload["command_topic"] = f"homeassistant/number/apriltagvision1/tag{tagid}/set"
    
         print(f"homeassistant/{tagtype}/apriltagvision1/tag{tagid}/config", json.dumps(payload))
 
