@@ -4,9 +4,10 @@ from pythonosc.udp_client import SimpleUDPClient
 import threading
 import argparse
 import time
+from memory_profiler import profile
 
 import at_utils as utils
-
+import gc
 
 
 NEG_FSEQ_FREQ = 0.25
@@ -32,17 +33,6 @@ def handle_key_press(key):
     elif key == ord('p'):
         paused = not paused
     return True
-
-def detect_apriltags(gray):
-    at_detector = Detector(families='tag36h11',
-                           nthreads=1,
-                           quad_decimate=1.0,
-                           quad_sigma=0.0,
-                           refine_edges=1,
-                           decode_sharpening=0.25,
-                           debug=0)
-    return at_detector.detect(gray, estimate_tag_pose=False, camera_params=None, tag_size=None)
-
 
 
 def generate_tuio_messages(rawtags, frame_width, frame_height):
@@ -150,7 +140,6 @@ def send_messages(tuio_messages, past_tags, current_tags):
     tuio_fseq += 1
 
 
-
 def run_apriltagvision():
     global paused
     global past_tags
@@ -170,7 +159,13 @@ def run_apriltagvision():
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, frame_height)
 
 
-
+    at_detector = Detector(families='tag36h11',
+                           nthreads=1,
+                           quad_decimate=1.0,
+                           quad_sigma=0.0,
+                           refine_edges=1,
+                           decode_sharpening=0.25,
+                           debug=0)
 
     tuio_fseq = 0
     last_negfseq_time = 0
@@ -196,7 +191,7 @@ def run_apriltagvision():
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
         # detect apriltags
-        rawtags = detect_apriltags(gray)
+        rawtags = at_detector.detect(gray, estimate_tag_pose=False, camera_params=None, tag_size=None)
 
         tuio_messages, current_tags = generate_tuio_messages(rawtags, frame_width, frame_height)
 
