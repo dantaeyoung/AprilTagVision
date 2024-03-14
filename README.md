@@ -6,7 +6,16 @@ AprilTagVision is a drop-in replacement for [reacTIVision](https://reactivision.
 
 
 
-## Install
+## Install (Easy)
+
+
+Download Mac binaries from https://github.com/dantaeyoung/AprilTagVision/tags.
+
+For Mac: Extract `apriltagvision_mac.zip`. Run `./apriltagvision --help` from the command line.
+
+
+## Install (Python)
+
 
 1. Download this repo.
 
