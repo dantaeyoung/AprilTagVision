@@ -5,7 +5,9 @@ import threading
 import argparse
 import time
 
-import utils
+import at_utils as utils
+
+
 
 NEG_FSEQ_FREQ = 0.25
 # this is the frequency at which negative fseq messages are sent. In practice, making this number smaller will allow downstream programs to be more reactive to tag disappearance.
@@ -149,7 +151,7 @@ def send_messages(tuio_messages, past_tags, current_tags):
 
 
 
-def main():
+def run_apriltagvision():
     global paused
     global past_tags
     global last_negfseq_time
@@ -165,6 +167,8 @@ def main():
     cap = cv2.VideoCapture(camera_index)  # Use the webcam
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, frame_width)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, frame_height)
+
+
 
 
     tuio_fseq = 0
@@ -216,6 +220,10 @@ def main():
 
     cap.release()
     cv2.destroyAllWindows()
+
+def main():
+    run_apriltagvision()
+
 
 if __name__ == "__main__":
     main()
