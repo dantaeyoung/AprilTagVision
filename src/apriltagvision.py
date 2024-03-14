@@ -216,7 +216,6 @@ def run_apriltagvision():
     cap.release()
     cv2.destroyAllWindows()
 
-@profile
 def main():
     run_apriltagvision()
 
