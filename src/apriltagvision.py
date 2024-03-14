@@ -4,10 +4,8 @@ from pythonosc.udp_client import SimpleUDPClient
 import threading
 import argparse
 import time
-from memory_profiler import profile
 
 import at_utils as utils
-import gc
 
 
 NEG_FSEQ_FREQ = 0.25
@@ -33,7 +31,6 @@ def handle_key_press(key):
     elif key == ord('p'):
         paused = not paused
     return True
-
 
 def generate_tuio_messages(rawtags, frame_width, frame_height):
     global verbose
@@ -219,6 +216,7 @@ def run_apriltagvision():
     cap.release()
     cv2.destroyAllWindows()
 
+@profile
 def main():
     run_apriltagvision()
 
