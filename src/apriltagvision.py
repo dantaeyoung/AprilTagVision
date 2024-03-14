@@ -163,6 +163,7 @@ def run_apriltagvision():
     frame_width = args.width
     frame_height = args.height
     verbose = args.verbose
+    headless = args.headless
 
     cap = cv2.VideoCapture(camera_index)  # Use the webcam
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, frame_width)
@@ -180,14 +181,15 @@ def run_apriltagvision():
         if not ret:
             break
 
-        # Pause processing if the program is paused
-        if paused:
-            cv2.putText(frame, "PAUSED", (20, frame_height // 2), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255), 2)
-            cv2.imshow('AprilTagVision (press p to pause, q to quit)', frame)
-            key = cv2.waitKey(1) & 0xFF
-            if not handle_key_press(key):
-                break
-            continue
+        if not headless:
+            # Pause processing if the program is paused
+            if paused:
+                cv2.putText(frame, "PAUSED", (20, frame_height // 2), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255), 2)
+                cv2.imshow('AprilTagVision (press p to pause, q to quit)', frame)
+                key = cv2.waitKey(1) & 0xFF
+                if not handle_key_press(key):
+                    break
+                continue
 
 
         # make frame grayscale
@@ -207,15 +209,16 @@ def run_apriltagvision():
 
                
 
-        # Display the frame
-        displayframe = create_displayframe(gray, rawtags, current_tags)
-        cv2.imshow('AprilTagVision (press p to pause, q to quit)', displayframe)
+        if not headless:
+            # Display the frame
+            displayframe = create_displayframe(gray, rawtags, current_tags)
+            cv2.imshow('AprilTagVision (press p to pause, q to quit)', displayframe)
 
 
-        # Handle key presses
-        key = cv2.waitKey(1) & 0xFF
-        if not handle_key_press(key):
-            break
+            # Handle key presses
+            key = cv2.waitKey(1) & 0xFF
+            if not handle_key_press(key):
+                break
 
 
     cap.release()

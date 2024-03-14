@@ -9,6 +9,7 @@ def parse_arguments():
     parser.add_argument("--width", type=int, default=640, help="Frame width")
     parser.add_argument("--height", type=int, default=480, help="Frame height")
     parser.add_argument("--verbose", action="store_true", help="Verbose mode (default: False)")
+    parser.add_argument("--headless", action="store_true", help="Headless mode (default: False)")
     return parser.parse_args()
 
 def round_and_threshold(x, threshold, sigfig):
