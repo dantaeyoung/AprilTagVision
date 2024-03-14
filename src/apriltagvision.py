@@ -5,7 +5,7 @@ import threading
 import argparse
 import time
 
-import at_utils as utils
+import utils
 
 
 NEG_FSEQ_FREQ = 0.25

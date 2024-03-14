@@ -9,6 +9,8 @@ import paho.mqtt.client as mqtt
 
 from wssbroadcastserver import WSSBroadcastServer
 
+import utils
+
 
 # this is how many seconds of disappearance the processor should ignore. A higher value leads to more stable values, but more latency. A lower value leads to more sensitivity but more flickering. Generally 0.05 - 0.5 seems to be a good range, with about 0.2 as a sweet spot.
 
@@ -21,14 +23,40 @@ sensitivity_time = 0.2
 last_tags_appearance = {}
 
 
-def broadcast_message(address, message):
+tags_homeassistant_config = {
+    100: "number",
+    101: "number",
+    102: "number",
+    6: "binary_sensor",
+    78: "binary_sensor"
+}
+
+
+def broadcast_data(address, data):
     global wsserver
     global oscclient
+    global mqttc
+
+    message = json.dumps(data)
+
     print("[BROADCAST] " + address + " -- " + message)
     if wsserver:
         asyncio.create_task(wsserver.send_message(message))
     if oscclient:
         oscclient.send_message(address, message)
+    if mqttc:
+        #mqttc.publish("test", message)
+        print(data)
+        if data['tagid'] == 102 and "ang" in data:
+            ang = round(utils.radians_to_number(data['ang']))
+            print(ang)
+            mqttc.publish("homeassistant/number/apriltagvision1/tag102/state", ang)
+        if data['change'] == 'appeared':
+            print(f"homeassistant/binary_sensor/apriltagvision1/tag{ data['tagid']}/state", "1")
+            mqttc.publish(f"homeassistant/binary_sensor/apriltagvision1/tag{ data['tagid']}/state", "1")
+        if data['change'] == 'disappeared':
+            mqttc.publish(f"homeassistant/binary_sensor/apriltagvision1/tag{ data['tagid']}/state", "0")
+        print(data)
 
 def handle_2dobj(address, *args):
     global oscclient
@@ -56,7 +84,7 @@ def handle_2dobj(address, *args):
         # Announce if the tag has newly appeared
         if tag_id not in last_tags_appearance:
             thistag['change'] = 'appeared'
-            broadcast_message(f"/tuio/{tag_id}", json.dumps(thistag))
+            broadcast_data(f"/tuio/{tag_id}", thistag)
             # TAG NEWLY APPEARED
             print(f"Tag {tag_id} newly appeared at ({thistag['xpos']}, {thistag['ypos']}), angle {thistag['ang']}")
 
@@ -64,7 +92,7 @@ def handle_2dobj(address, *args):
         # Announce if tag has moved
         if(thistag['xvel'] > 0 or thistag['yvel'] > 0 or thistag['angvel'] > 0):
             thistag['change'] = 'moved'
-            broadcast_message(f"/tuio/{tag_id}", json.dumps(thistag))
+            broadcast_data(f"/tuio/{tag_id}", thistag)
 
 
         # update list of when this tag appeared
@@ -83,7 +111,7 @@ def handle_2dobj(address, *args):
                     'tagid': tag_id,
                     'change': 'disappeared',
                 }
-                broadcast_message(f"/tuio/{tag_id}", json.dumps(thistag))
+                broadcast_data(f"/tuio/{tag_id}", thistag)
                 print(f"Tag {tag_id} disappeared")
                 del last_tags_appearance[tag_id]
 
@@ -126,6 +154,62 @@ async def init_OSC_broadcast():
 
 
 
+
+
+
+def send_mqtt_discover_payload(client):
+
+
+    for tagid, tagtype in tags_homeassistant_config.items():
+
+        payload = {
+           "unique_id": f"atv1_t{tagid}",
+           "name": f"ATV 1 Tag {tagid}",
+           "state_topic": f"homeassistant/apriltagvision1/tag{tagid}/state",
+           "device":{
+              "identifiers":[
+                 "apriltagvision1"
+              ],
+              "name":"AprilTagVision1"
+           }
+        }
+
+        if tagtype == "binary_sensor":
+            payload['payload_on'] = "1"
+            payload['payload_off'] = "0"
+
+        if tagtype == "number":
+            payload['min'] = "0"
+            payload['max'] = "100"
+            payload["command_topic"]: f"homeassistant/number/apriltagvision1/tag{tagid}/set"
+    
+        client.publish(f"homeassistant/{tagtype}/apriltagvision1/tag{tagid}/config", json.dumps(payload))
+        print("sending ", json.dumps(payload))
+
+
+
+def on_connect(client, userdata, flags, reason_code, properties):
+    print(f"Connected with result code {reason_code}")
+    send_mqtt_discover_payload(client)
+
+
+async def init_mqtt_broadcast():
+    global mqttc
+    mqttbroker_address = "100.91.199.119"
+    mqttbroker_port = 1883
+
+    mqttc = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
+    mqtt_username = utils.get_key('mqtt_username')
+    mqtt_password = utils.get_key('mqtt_password')
+    mqttc.username_pw_set(mqtt_username, mqtt_password)
+    mqttc.on_connect = on_connect
+    mqttc.connect(mqttbroker_address, mqttbroker_port, 60)
+
+    mqttc.loop_start()
+    print("Ready to broadcast MQTT messages")
+
+
+
 class TuioProcessor:
     _instance = None
 
@@ -137,6 +221,7 @@ class TuioProcessor:
     async def init_singleton(self):
         await asyncio.gather(
             init_OSC_broadcast(),
+            init_mqtt_broadcast(),
             init_TUIO_listener(),
             init_websocketserver(),
         )
