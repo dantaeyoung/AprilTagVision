@@ -23,6 +23,40 @@ def send_tuio_messages(messages):
     for m in messages:
         osc_client.send_message(m[0], m[1])
 
+def handle_key_press(key):
+    global paused
+    if key == ord('q'):
+        return False  # Indicate to quit
+    elif key == ord('p'):
+        paused = not paused
+    return True
+
+def detect_apriltags(gray):
+    at_detector = Detector(families='tag36h11',
+                           nthreads=1,
+                           quad_decimate=1.0,
+                           quad_sigma=0.0,
+                           refine_edges=1,
+                           decode_sharpening=0.25,
+                           debug=0)
+    return at_detector.detect(gray, estimate_tag_pose=False, camera_params=None, tag_size=None)
+
+
+
+def create_displayframe(gray, tags, current_tags):
+    # Create a copy of the grayscale frame to draw colored polylines
+    displayframe = cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR)
+
+    # Visualize detected tags
+    for tag in tags:
+        cv2.polylines(displayframe, [tag.corners.astype(int)], isClosed=True, color=(0, 255, 0), thickness=2)
+
+        rotated_text_img, _, _ = utils.putRotatedText(displayframe, str(tag.tag_id), (int(tag.center[0]), int(tag.center[1])), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 255), 2, current_tags[tag.tag_id]['a'])
+        displayframe = cv2.add(displayframe, rotated_text_img)
+    return displayframe
+
+
+
 def main():
     global paused
     args = utils.parse_arguments()
@@ -34,14 +68,6 @@ def main():
     cap = cv2.VideoCapture(camera_index)  # Use the webcam
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, frame_width)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, frame_height)
-
-    at_detector = Detector(families='tag36h11',
-                           nthreads=1,
-                           quad_decimate=1.0,
-                           quad_sigma=0.0,
-                           refine_edges=1,
-                           decode_sharpening=0.25,
-                           debug=0)
 
     # Track visible tags and their last known positions
     past_tags = {}
@@ -60,10 +86,8 @@ def main():
             cv2.putText(frame, "PAUSED", (20, frame_height // 2), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255), 2)
             cv2.imshow('AprilTagVision (press p to pause, q to quit)', frame)
             key = cv2.waitKey(1) & 0xFF
-            if key == ord('q'):
+            if not handle_key_press(key):
                 break
-            elif key == ord('p'):
-                paused = False
             continue
 
 
@@ -72,8 +96,7 @@ def main():
 
 
         # detect apriltags
-        tags = at_detector.detect(gray, estimate_tag_pose=False, camera_params=None, tag_size=None)
-
+        tags = detect_apriltags(gray)
 
 
 
@@ -156,26 +179,18 @@ def main():
         # increment fseq
         tuio_fseq += 1
 
-        # Create a copy of the grayscale frame to draw colored polylines
-        displayframe = cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR)
 
-        # Visualize detected tags
-        for tag in tags:
-            cv2.polylines(displayframe, [tag.corners.astype(int)], isClosed=True, color=(0, 255, 0), thickness=2)
-            rotated_text_img, _, _ = utils.putRotatedText(displayframe, str(tag.tag_id), (int(tag.center[0]), int(tag.center[1])), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 255), 2, current_tags[tag.tag_id]['a'])
-            displayframe = cv2.add(displayframe, rotated_text_img)
-            
+               
 
         # Display the frame
+        displayframe = create_displayframe(gray, tags, current_tags)
         cv2.imshow('AprilTagVision (press p to pause, q to quit)', displayframe)
 
 
         # Handle key presses
         key = cv2.waitKey(1) & 0xFF
-        if key == ord('q'):
+        if not handle_key_press(key):
             break
-        elif key == ord('p'):
-            paused = not paused
 
 
     cap.release()
