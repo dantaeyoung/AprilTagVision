@@ -182,7 +182,9 @@ def send_mqtt_discover_payload(client):
             payload['min'] = "0"
             payload['max'] = "100"
             payload["command_topic"]: f"homeassistant/number/apriltagvision1/tag{tagid}/set"
-    
+   
+        print(f"homeassistant/{tagtype}/apriltagvision1/tag{tagid}/config", json.dumps(payload))
+
         client.publish(f"homeassistant/{tagtype}/apriltagvision1/tag{tagid}/config", json.dumps(payload))
         print("sending ", json.dumps(payload))
 
