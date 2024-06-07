@@ -46,7 +46,7 @@ def broadcast_data(address, data):
         oscclient.send_message(address, message)
     if mqttc:
         #mqttc.publish("test", message)
-        print(data)
+        #print(data)
         if "ang" in data and data['tagid'] in tags_homeassistant_config and tags_homeassistant_config[data['tagid']] == "number":
             ang = round(utils.radians_to_number(data['ang']))
             print(ang)
