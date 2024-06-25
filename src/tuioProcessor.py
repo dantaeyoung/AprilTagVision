@@ -46,7 +46,7 @@ def broadcast_data(address, data):
         oscclient.send_message(address, message)
     if mqttc:
         #mqttc.publish("test", message)
-        print(data)
+        #print(data)
         if "ang" in data and data['tagid'] in tags_homeassistant_config and tags_homeassistant_config[data['tagid']] == "number":
             ang = round(utils.radians_to_number(data['ang']))
             print(ang)
@@ -207,7 +207,7 @@ async def init_mqtt_broadcast():
     mqtt_password = utils.get_key('mqtt_password')
     mqttc.username_pw_set(mqtt_username, mqtt_password)
     mqttc.on_connect = on_connect
-    mqttc.connect(mqttbroker_address, mqttbroker_port, 60)
+    mqttc.connect_async(mqttbroker_address, mqttbroker_port, 60)
 
     mqttc.loop_start()
     print("Ready to broadcast MQTT messages")
